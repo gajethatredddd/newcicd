@@ -4,13 +4,13 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'docker compose build'
+                sh 'Всё собралось'
             }
         }
         
         stage('Test') {
             steps {
-                echo 'Тесты пропущены, всё чётко! ✅'
+                sh 'docker compose exec app python -m pytest -v'
             }
         }
         

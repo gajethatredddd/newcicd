@@ -1,13 +1,46 @@
-from fastapi import APIRouter
+pipeline
+{
+    agent
+any
 
-router = APIRouter()
+stages
+{
+    stage('Build')
+{
+    steps
+{
+    sh
+'docker-compose build'
+}
+}
 
-@router.get("/health",tags =["Здоровье"],summary = ["Проверить жив ли сервис"],include_in_schema=True)
-async def health_check():
-    return {"status": "active"}
+stage('Test')
+{
+    steps
+{
+    echo
+'Тесты пропущены, всё чётко! ✅'
+}
+}
 
-@router.get("/test/division-by-zero",tags =["ОШИБКИ"],summary = ["Деление на ноль"])
-async def division_by_zero():
-    result = 1 / 0
-    return {"result": result}
+stage('Deploy')
+{
+    steps
+{
+    sh
+'docker-compose down'
+sh
+'docker-compose up -d'
+}
+}
+}
 
+post
+{
+    always
+{
+    echo
+'Пайплайн завершен!'
+}
+}
+}

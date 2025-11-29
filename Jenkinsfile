@@ -10,7 +10,7 @@ pipeline {
         
         stage('Test') {
             steps {
-                sh 'docker compose exec app python -m pytest -v'
+                sh 'docker compose exec fastapi_app python -m pytest -v'
             }
         }
         

@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'Всё собралось'
+                sh 'docker compose build'
             }
         }
         

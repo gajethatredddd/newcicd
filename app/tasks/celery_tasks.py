@@ -1,0 +1,40 @@
+from celery import Celery
+from app.core.config import settings
+from app.services.message_service import MessageService
+
+# Инициализация Celery с RabbitMQ
+celery_app = Celery(
+    "Сельдерей",
+    broker=settings.CELERY_BROKER_URL,
+    backend=settings.CELERY_BACKEND_URL,
+)
+
+celery_app.autodiscover_tasks()
+
+
+@celery_app.task
+def send_email_task(to_email: str, image_id: str):
+    """
+    получить текст с джанги и отправить письмо.
+    """
+    service = MessageService()
+
+    # 1. текст из апишки джанги
+    extracted_text = service.fetch_text_from_external_api(image_id)
+
+    # 2. текст письма
+    subject = f"Всё чётко {image_id}"
+    body = f"Картинка {image_id} успешно обработана.\n\nИзвлечённый текст:\n\n{extracted_text}"
+
+    # 3. Отправка email
+    service.send_email(
+        to_email=to_email,
+        subject=subject,
+        body=body
+    )
+
+    return {
+        "status": "отправлено",
+        "email": to_email,
+        "image_id": image_id
+    }
